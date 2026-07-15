@@ -38,21 +38,24 @@ def plot_energy(time, total, kinetic, potential, path=None):
     return fig
 
 
-def plot_gofr(r, g, path=None, label=None, extra=None):
+def plot_gofr(r, g, path=None, label=None, extra=None, xmax=None):
     """Plot the radial distribution function ``g(r)``.
 
     ``extra`` is an optional list of ``(r, g, label)`` tuples for overlays
-    (e.g. a low-density reference).
+    (e.g. a low-density reference).  ``xmax`` caps the horizontal axis so the
+    near-neighbour structure stays legible.
     """
     fig, ax = plt.subplots(figsize=(7.5, 4.5))
     ax.plot(r, g, lw=1.6, color="#2e86ab", label=label or r"$g(r)$")
     if extra:
         for rr, gg, lab in extra:
-            ax.plot(rr, gg, lw=1.2, ls="--", label=lab)
+            ax.plot(rr, gg, lw=1.2, ls="--", color="#d1495b", label=lab)
     ax.axhline(1.0, color="grey", lw=0.8, ls=":")
     ax.set_xlabel(r"distance  $r / \sigma$")
     ax.set_ylabel(r"$g(r)$")
     ax.set_title("Radial distribution function")
+    if xmax is not None:
+        ax.set_xlim(0, xmax)
     ax.legend(frameon=False)
     fig.tight_layout()
     if path:
