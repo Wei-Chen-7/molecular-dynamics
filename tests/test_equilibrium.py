@@ -82,7 +82,10 @@ def test_velocity_components_are_gaussian():
         sim.run(80)
         comps.append(sim.system.velocities.ravel())
     comps = np.concatenate(comps)
-    stat, pvalue = stats.kstest(comps, "norm", args=(0.0, np.sqrt(target)))
+    # Compare against a frozen normal(0, sqrt(kT)) CDF. Passing the callable CDF
+    # (rather than the name + `args`) keeps this working across scipy versions.
+    normal_cdf = stats.norm(loc=0.0, scale=np.sqrt(target)).cdf
+    stat, pvalue = stats.kstest(comps, normal_cdf)
     assert stat < 0.05 or pvalue > 0.05
 
 
